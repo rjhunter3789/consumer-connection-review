@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consumer Connection+ Dealer Review</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-blue-600 selection:text-white">
+
+  <!-- Top App Navigation & Dealer Context Header -->
+  <header class="bg-slate-800 border-b border-slate-700/80 sticky top-0 z-40 px-4 py-2.5 shadow-md no-print">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Brand & Title -->
+      <div class="flex items-center space-x-3">
+        <div class="bg-blue-600 text-white p-1.5 rounded-lg shadow-sm">
+          <i data-lucide="layers" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="text-xs uppercase tracking-wider font-semibold text-blue-400">Consumer Connection+</span>
+            <span class="text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded border border-amber-500/30 font-medium">DEMO MODE</span>
+          </div>
+          <h1 class="text-sm font-bold tracking-tight text-white">Dealer Review Experience</h1>
+        </div>
+      </div>
+
+      <!-- Current Resolved Dealer Info Pill -->
+      <div id="dealerHeaderPill" class="flex items-center gap-3 bg-slate-900/90 px-3.5 py-1.5 rounded-lg border border-slate-700">
+        <div class="flex items-center space-x-2 text-xs">
+          <span class="text-slate-400">Store:</span>
+          <span id="headerDealerName" class="font-semibold text-slate-100">Cascade Ford</span>
+          <span class="bg-blue-900/60 text-blue-300 font-mono text-[11px] px-2 py-0.5 rounded border border-blue-700/50" id="headerPaCode">PA: 04291</span>
+        </div>
+        <div class="h-3 w-px bg-slate-700"></div>
+        <div class="flex items-center space-x-1.5 text-[11px] text-slate-400">
+          <i data-lucide="calendar" class="w-3.5 h-3.5 text-slate-400"></i>
+          <span id="headerDateRange">Last 120 Days</span>
+        </div>
+      </div>
+
+      <!-- Utility Controls -->
+      <div class="flex items-center space-x-2">
+        <button id="calendarDrawerBtn" class="flex items-center space-x-1.5 text-xs bg-slate-700 hover:bg-slate-600 text-slate-200 px-3 py-1.5 rounded-md transition border border-slate-600">
+          <i data-lucide="calendar-check-2" class="w-4 h-4 text-blue-400"></i>
+          <span>Meeting Context</span>
+        </button>
+
+        <button id="presentModeBtn" class="flex items-center space-x-1.5 text-xs bg-blue-600 hover:bg-blue-500 text-white font-medium px-3 py-1.5 rounded-md transition shadow-sm">
+          <i data-lucide="presentation" class="w-4 h-4"></i>
+          <span>Present</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Meeting Context / Switcher Modal Drawer (FR-01, FR-02, FR-08) -->
+  <div id="calendarDrawer" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-end transition-opacity">
+    <div class="bg-slate-800 w-full max-w-md h-full p-6 shadow-2xl border-l border-slate-700 flex flex-col justify-between overflow-y-auto">
+      <div>
+        <div class="flex items-center justify-between pb-4 border-b border-slate-700">
+          <div class="flex items-center space-x-2">
+            <i data-lucide="calendar-search" class="w-5 h-5 text-blue-400"></i>
+            <h2 class="text-base font-bold text-white">Calendar & Dealer Matcher</h2>
+          </div>
+          <button id="closeDrawerBtn" class="text-slate-400 hover:text-white">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <p class="text-xs text-slate-400 mt-3 leading-relaxed">
+          The MVP automatically parses the calendar invite for the authoritative <strong>PA Code</strong> and validates against authorized records.
+        </p>
+
+        <!-- Calendar Scenario Simulator -->
+        <div class="mt-5 space-y-4">
+          <label class="text-xs font-semibold text-slate-300 block uppercase tracking-wider">Simulate Meeting Context:</label>
+          
+          <button onclick="loadScenario('dealer_full')" class="w-full text-left p-3 rounded-lg bg-slate-900/80 hover:bg-slate-700 border border-slate-700 hover:border-blue-500 transition group">
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-xs font-semibold text-white group-hover:text-blue-400">Cascade Ford</span>
+              <span class="text-[10px] bg-blue-900/60 text-blue-300 px-1.5 py-0.5 rounded font-mono">PA: 04291</span>
+            </div>
+            <div class="text-[11px] text-slate-400">Event: "Q3 CC+ Review: Cascade Ford [PA: 04291]"</div>
+            <div class="text-[10px] text-emerald-400 mt-1">✓ 4 Pages (Full Program Activation)</div>
+          </button>
+
+          <button onclick="loadScenario('dealer_single')" class="w-full text-left p-3 rounded-lg bg-slate-900/80 hover:bg-slate-700 border border-slate-700 hover:border-blue-500 transition group">
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-xs font-semibold text-white group-hover:text-blue-400">Evergreen Lincoln</span>
+              <span class="text-[10px] bg-blue-900/60 text-blue-300 px-1.5 py-0.5 rounded font-mono">PA: 08174</span>
+            </div>
+            <div class="text-[11px] text-slate-400">Event: "Monthly Catchup: Evergreen Lincoln (08174)"</div>
+            <div class="text-[10px] text-blue-400 mt-1">✓ Exactly 1 Page (Service Reminder Only)</div>
+          </button>
+
+          <button onclick="loadScenario('dealer_two')" class="w-full text-left p-3 rounded-lg bg-slate-900/80 hover:bg-slate-700 border border-slate-700 hover:border-blue-500 transition group">
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-xs font-semibold text-white group-hover:text-blue-400">Olympic Auto Group</span>
+              <span class="text-[10px] bg-blue-900/60 text-blue-300 px-1.5 py-0.5 rounded font-mono">PA: 01550</span>
+            </div>
+            <div class="text-[11px] text-slate-400">Event: "Review: Olympic Auto - PA 01550"</div>
+            <div class="text-[10px] text-amber-400 mt-1">✓ 2 Pages (After Service + Digital Marketing)</div>
+          </button>
+
+          <div class="pt-2 border-t border-slate-700">
+            <label class="text-[11px] text-slate-400 uppercase font-semibold">Test Failure Fallbacks (FR-10):</label>
+            <div class="grid grid-cols-2 gap-2 mt-2">
+              <button onclick="loadScenario('error_unresolved')" class="text-xs p-2 rounded bg-rose-950/40 hover:bg-rose-900/50 border border-rose-800 text-rose-300 text-center transition">
+                Unresolved PA Code
+              </button>
+              <button onclick="loadScenario('error_api')" class="text-xs p-2 rounded bg-rose-950/40 hover:bg-rose-900/50 border border-rose-800 text-rose-300 text-center transition">
+                API 503 Outage
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-slate-700 text-[11px] text-slate-500">
+        Build Spec FR-01 through FR-12 compliant • Isolated Mock Adapter
+      </div>
+    </div>
+  </div>
+
+  <!-- Dynamic Page Navigation Tabs (1 to 4 pages dynamically rendered) -->
+  <nav id="pageNavContainer" class="bg-slate-800/60 border-b border-slate-700/60 px-4 py-2 no-print">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div id="pageTabList" class="flex items-center space-x-2">
+        <!-- Rendered dynamically via JS -->
+      </div>
+      <div class="text-xs text-slate-400 hidden sm:flex items-center space-x-1">
+        <span>Use keys</span>
+        <kbd class="px-1.5 py-0.5 bg-slate-700 rounded text-[10px] font-mono text-slate-300 border border-slate-600">←</kbd>
+        <kbd class="px-1.5 py-0.5 bg-slate-700 rounded text-[10px] font-mono text-slate-300 border border-slate-600">→</kbd>
+        <span>to flip pages</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Presentation Surface (Optimized for 14-inch laptops, zero horizontal scroll) -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 flex flex-col justify-between">
+    
+    <!-- Active State Container -->
+    <div id="activePageContent">
+      <!-- Injected dynamically -->
+    </div>
+
+    <!-- Error/Unresolved Fallback Container -->
+    <div id="fallbackStateContent" class="hidden my-auto py-12 text-center max-w-md mx-auto">
+      <div id="fallbackIconBox" class="w-14 h-14 mx-auto rounded-full bg-rose-900/30 border border-rose-700/50 flex items-center justify-center text-rose-400 mb-4">
+        <i data-lucide="alert-triangle" class="w-7 h-7"></i>
+      </div>
+      <h3 id="fallbackTitle" class="text-lg font-bold text-white mb-2">Dealer Not Identified</h3>
+      <p id="fallbackMessage" class="text-xs text-slate-400 leading-relaxed mb-6">
+        The calendar event does not contain a recognized PA Code. Select an authorized dealer manually.
+      </p>
+      <div class="flex justify-center gap-3">
+        <button onclick="loadScenario('dealer_full')" class="text-xs bg-blue-600 hover:bg-blue-500 text-white font-medium px-4 py-2 rounded-md transition shadow">
+          Load Cascade Ford
+        </button>
+        <button onclick="document.getElementById('calendarDrawer').classList.remove('hidden')" class="text-xs bg-slate-700 hover:bg-slate-600 text-slate-200 px-4 py-2 rounded-md transition border border-slate-600">
+          Open Matcher
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Presentation Footer Info Bar -->
+  <footer class="bg-slate-800/80 border-t border-slate-700/80 px-4 py-2 text-xs text-slate-400 no-print">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center space-x-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        <span id="footerGeneratedAt">Data Freshness: Today at 06:00 AM (Refreshed Daily)</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-500">Consumer Connection+ API Adapter v1.0.4 (Mock Mode)</span>
+        <span id="pageCounterDisplay" class="font-mono text-slate-300">Page 1 of 4</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* =========================================================================
+       MOCK DATA REPOSITORY (Simulates API responses compliant with Build Spec)
+       ========================================================================= */
+    const DEALER_DATABASE = {
+      '04291': {
+        dealer: { paCode: '04291', name: 'Cascade Ford' },
+        meeting: { title: 'Q3 CC+ Review: Cascade Ford [PA: 04291]', time: 'Today, 2:00 PM' },
+        reportContext: { startDate: '05/27/2026', endDate: '09/24/2026', generatedAt: '09/24/2026 06:14 AM' },
+        pages: [
+          {
+            id: 'service-reminder',
+            title: 'Service Reminder Performance',
+            subtitle: 'Campaign outcome and customer retention through automated outreach',
+            metrics: [
+              { label: 'Unique VINs Contacted', value: '2,237', subtext: 'Email, Mail & Digital', badge: '100%' },
+              { label: 'Responding VINs', value: '283', subtext: 'Booked service repair', badge: '+12.65% resp. rate' },
+              { label: 'Repair Orders Generated', value: '319', subtext: 'Active completed ROs', badge: 'RO Volume' },
+              { label: 'Total RO Revenue', value: '$178,961', subtext: 'Cust Pay: $128k | Wty: $50k', badge: 'Gross Output', highlight: true },
+              { label: 'Average RO Value', value: '$561.00', subtext: 'Vs $520 Zone benchmark', badge: '+$41 vs Zone' }
+            ],
+            talkingPoint: "The automated Service Reminder stream captured $178.9K in repair revenue across 319 ROs. With an average ticket of $561, the store outperformed the regional benchmark by $41 per ticket.",
+            breakdownTitle: 'Segment Conversion Summary',
+            breakdownHeaders: ['Reminder Segment', 'VINs Contacted', 'Response Rate', 'Avg RO Value', 'Total RO Revenue'],
+            breakdownRows: [
+              ['Loyal Owners (30-90 Day)', '1,283', '13.8%', '$521.82', '$104,239.28'],
+              ['Lost / Inactive (12+ Mo)', '572', '6.5%', '$600.13', '$36,677.82'],
+              ['Past Due Maintenance', '382', '12.4%', '$714.00', '$38,044.00']
+            ]
+          },
+          {
+            id: 'after-service',
+            title: 'After Service Retention',
+            subtitle: 'Post-visit follow-up and unscheduled/declined services recaptured',
+            metrics: [
+              { label: 'Follow-ups Delivered', value: '529', subtext: 'VINs with declined lines', badge: 'Outreach' },
+              { label: 'Responding Customers', value: '57', subtext: 'Returned within 60 days', badge: '10.78% rate' },
+              { label: 'Recaptured ROs', value: '67', subtext: 'Warranty + Cust Pay', badge: 'Recaptured' },
+              { label: 'Recaptured Revenue', value: '$41,765', subtext: 'Cust Pay: $31.2k | Wty: $10.4k', badge: 'Net Gain', highlight: true },
+              { label: 'Average RO', value: '$623.36', subtext: 'High ticket services', badge: 'High Value' }
+            ],
+            talkingPoint: "Declined-line follow-ups generated $41.7K in otherwise lost gross profit. 10.78% of customers returned to complete postponed services, representing an immediate positive ROI on triggered campaigns.",
+            breakdownTitle: 'Campaign Response Details',
+            breakdownHeaders: ['Service Group', 'Total Sent', 'Responders', 'Customer Pay', 'Total Revenue'],
+            breakdownRows: [
+              ['Declined Service Outreach', '529', '57', '$31,297.44', '$41,765.15'],
+              ['Service Thank You & Checkup', '6,203', 'N/A', '$0.00', 'Satisfaction Only']
+            ]
+          },
+          {
+            id: 'digital-marketing',
+            title: 'Service Digital Marketing & Benchmarks',
+            subtitle: 'Digital impression share compared across Zone, Region, and Market',
+            metrics: [
+              { label: 'Digital Impressions', value: '50,368', subtext: 'Targeted service geofence', badge: 'Reach' },
+              { label: 'Unique Customers Reached', value: '1,750', subtext: 'Active service prospects', badge: 'Local Focus' },
+              { label: 'Digital RO Conversions', value: '147', subtext: 'Verified matchback', badge: 'Conversions' },
+              { label: 'Total Digital RO Value', value: '$100,740', subtext: 'Total matchback volume', badge: 'Top Tier', highlight: true }
+            ],
+            talkingPoint: "Your Service Digital campaigns reached 1,750 verified in-market vehicle owners, resulting in 147 matchback repair orders. At $100.7K, digital RO yield is tracking closely with top performers in the zone.",
+            benchmarkTitle: 'Zone & Market Benchmark Comparison',
+            benchmarks: [
+              { metric: 'Avg RO Ticket', store: '$561', zone: '$520', region: '$535', national: '$512', status: 'above' },
+              { metric: 'Service Response Rate', store: '12.65%', zone: '10.10%', region: '11.20%', national: '9.80%', status: 'above' },
+              { metric: 'Declined Service Recapture', store: '10.78%', zone: '8.40%', region: '9.10%', national: '7.95%', status: 'above' },
+              { metric: 'Digital RO Conversion Rate', store: '8.40%', zone: '8.90%', region: '8.20%', national: '7.60%', status: 'neutral' }
+            ]
+          },
+          {
+            id: 'sales-summary',
+            title: 'Sales Summary & Trade Inflow',
+            subtitle: 'Direct vehicle acquisition and upgrade leads driven by service marketing',
+            metrics: [
+              { label: 'Customers Targeted', value: '993', subtext: 'Equity & upgrade triggers', badge: 'Equity Out' },
+              { label: 'Communications Sent', value: '4,370', subtext: 'Direct mail + email + display', badge: 'Touches' },
+              { label: 'Vehicles Sold / Upgraded', value: '14', subtext: 'Attributed showroom sales', badge: 'Matchback' },
+              { label: 'Service-to-Sale Gross', value: '$46,200', subtext: 'Estimated vehicle front/back', badge: 'Trade Inflow', highlight: true }
+            ],
+            talkingPoint: "Equity notifications dispatched to service drive customers produced 14 documented vehicle transactions, confirming that Consumer Connection is driving sales lane turnover without separate ad spend.",
+            breakdownTitle: 'Active Upgrade Campaigns',
+            breakdownHeaders: ['Campaign Initiative', 'Delivered', 'Sales Attributed', 'Campaign Cost', 'Net Return'],
+            breakdownRows: [
+              ['Private Offer / Fast Start Priority', '563', '8 units', '$350.00', '18.4x ROI'],
+              ['Q3 Lease Expiration Upgrade', '312', '4 units', '$210.00', '12.2x ROI'],
+              ['High Mileage Trade Pursuit', '118', '2 units', '$85.00', '9.8x ROI']
+            ]
+          }
+        ]
+      },
+
+      '08174': {
+        dealer: { paCode: '08174', name: 'Evergreen Lincoln' },
+        meeting: { title: 'Monthly Catchup: Evergreen Lincoln (08174)', time: 'Tomorrow, 10:00 AM' },
+        reportContext: { startDate: '06/01/2026', endDate: '09/24/2026', generatedAt: '09/24/2026 06:14 AM' },
+        pages: [
+          {
+            id: 'service-reminder',
+            title: 'Service Reminder Performance',
+            subtitle: 'Campaign outcome and customer retention through automated outreach',
+            metrics: [
+              { label: 'Unique VINs Contacted', value: '840', subtext: 'Lincoln Black Label & Standard', badge: '100%' },
+              { label: 'Responding VINs', value: '124', subtext: 'Booked service repair', badge: '14.76% resp. rate' },
+              { label: 'Repair Orders Generated', value: '136', subtext: 'Active completed ROs', badge: 'RO Volume' },
+              { label: 'Total RO Revenue', value: '$98,420', subtext: 'High-ticket luxury services', badge: 'Gross Output', highlight: true },
+              { label: 'Average RO Value', value: '$723.67', subtext: 'Vs $640 Lincoln Zone', badge: '+$83 vs Zone' }
+            ],
+            talkingPoint: "Evergreen Lincoln demonstrates high-efficiency guest engagement. A 14.76% response rate is producing $723 per ticket, well ahead of the luxury benchmark.",
+            breakdownTitle: 'Segment Conversion Summary',
+            breakdownHeaders: ['Reminder Segment', 'VINs Contacted', 'Response Rate', 'Avg RO Value', 'Total RO Revenue'],
+            breakdownRows: [
+              ['Luxury Tier I (Annual Check)', '510', '16.2%', '$780.00', '$64,428.00'],
+              ['Concierge / Pickup Eligible', '330', '12.5%', '$636.90', '$33,992.00']
+            ]
+          }
+        ]
+      },
+
+      '01550': {
+        dealer: { paCode: '01550', name: 'Olympic Auto Group' },
+        meeting: { title: 'Review: Olympic Auto - PA 01550', time: 'Friday, 3:30 PM' },
+        reportContext: { startDate: '06/15/2026', endDate: '09/24/2026', generatedAt: '09/24/2026 06:14 AM' },
+        pages: [
+          {
+            id: 'after-service',
+            title: 'After Service Follow-Up Performance',
+            subtitle: 'Analysis of customer retention following service drive visits',
+            metrics: [
+              { label: 'Unique VINs Contacted', value: '1,120', subtext: '30-Day follow up', badge: 'Contacted' },
+              { label: 'Responding VINs', value: '142', subtext: 'Schedule second visit', badge: '12.67% rate' },
+              { label: 'Total RO Revenue', value: '$84,210', subtext: 'Cust Pay & Warranty combined', badge: 'Revenue', highlight: true },
+              { label: 'Average RO', value: '$593.00', subtext: 'Healthy ticket spread', badge: 'Avg RO' }
+            ],
+            talkingPoint: "After Service outreach is converting at 12.67%, driving $84.2K into the lanes across 142 returning vehicles.",
+            breakdownTitle: 'Channel Breakdown',
+            breakdownHeaders: ['Channel', 'Dispatched', 'Open / Click', 'Response Rate', 'Attributed Sales'],
+            breakdownRows: [
+              ['Automated Email Follow-up', '780', '64.2%', '14.1%', '$58,200.00'],
+              ['SMS Re-engagement', '340', '98.0%', '9.4%', '$26,010.00']
+            ]
+          },
+          {
+            id: 'digital-marketing',
+            title: 'Digital Marketing & Geofence Campaigns',
+            subtitle: 'Targeted regional media matchback against dealer RO archives',
+            metrics: [
+              { label: 'Digital Impressions', value: '88,400', subtext: 'Local conquest & retention', badge: 'Impressions' },
+              { label: 'Conversions Matched', value: '204', subtext: 'Physical RO matches', badge: 'Matchback' },
+              { label: 'Attributed Gross', value: '$134,880', subtext: 'Service revenue yield', badge: 'Direct Yield', highlight: true }
+            ],
+            talkingPoint: "Digital geofencing is functioning as a strong retention wall against independent repair facilities in the area.",
+            benchmarkTitle: 'Zone Comparison',
+            benchmarks: [
+              { metric: 'Conversion Rate', store: '9.2%', zone: '8.1%', region: '8.4%', national: '7.8%', status: 'above' },
+              { metric: 'Avg RO Yield', store: '$661', zone: '$540', region: '$560', national: '$525', status: 'above' }
+            ]
+          }
+        ]
+      }
+    };
+
+    /* =========================================================================
+       APPLICATION STATE
+       ========================================================================= */
+    let currentDealerData = null;
+    let activePageIndex = 0;
+    let isPresentMode = false;
+
+    /* =========================================================================
+       CORE CONTROLLER METHODS
+       ========================================================================= */
+    function init() {
+      // Setup Lucide icons
+      lucide.createIcons();
+
+      // Drawer toggle listeners
+      document.getElementById('calendarDrawerBtn').addEventListener('click', () => {
+        document.getElementById('calendarDrawer').classList.remove('hidden');
+      });
+      document.getElementById('closeDrawerBtn').addEventListener('click', () => {
+        document.getElementById('calendarDrawer').classList.add('hidden');
+      });
+
+      // Presentation mode toggle
+      document.getElementById('presentModeBtn').addEventListener('click', togglePresentMode);
+
+      // Keyboard navigation
+      document.addEventListener('keydown', (e) => {
+        if (!currentDealerData || !currentDealerData.pages) return;
+        if (e.key === 'ArrowRight' && activePageIndex < currentDealerData.pages.length - 1) {
+          switchPage(activePageIndex + 1);
+        } else if (e.key === 'ArrowLeft' && activePageIndex > 0) {
+          switchPage(activePageIndex - 1);
+        } else if (e.key === 'Escape' && isPresentMode) {
+          togglePresentMode();
+        }
+      });
+
+      // Default initial load: Scenario A (Cascade Ford)
+      loadScenario('dealer_full');
+    }
+
+    function loadScenario(type) {
+      document.getElementById('calendarDrawer').classList.add('hidden');
+
+      if (type === 'dealer_full') {
+        resolveDealerByPaCode('04291');
+      } else if (type === 'dealer_single') {
+        resolveDealerByPaCode('08174');
+      } else if (type === 'dealer_two') {
+        resolveDealerByPaCode('01550');
+      } else if (type === 'error_unresolved') {
+        showFallbackState(
+          'alert-circle',
+          'PA Code Resolution Failed',
+          'The meeting invite text does not match any authorized dealer PA Code in the directory. Fuzzy matching is disabled by security policy.'
+        );
+      } else if (type === 'error_api') {
+        showFallbackState(
+          'server-crash',
+          'Consumer Connection API 503 Outage',
+          'The Consumer Connection backend service returned an HTTP 503 Unavailable status code. Front-end fallback engaged.'
+        );
+      }
+    }
+
+    function resolveDealerByPaCode(paCode) {
+      // Deterministic key matching
+      const data = DEALER_DATABASE[paCode];
+      if (!data) {
+        showFallbackState('alert-triangle', 'Dealer Not Found', `PA Code "${paCode}" is not authorized or has no active records.`);
+        return;
+      }
+
+      currentDealerData = data;
+      activePageIndex = 0;
+
+      // Update header info
+      document.getElementById('dealerHeaderPill').classList.remove('hidden');
+      document.getElementById('headerDealerName').innerText = data.dealer.name;
+      document.getElementById('headerPaCode').innerText = `PA: ${data.dealer.paCode}`;
+      document.getElementById('headerDateRange').innerText = `${data.reportContext.startDate} – ${data.reportContext.endDate}`;
+      document.getElementById('footerGeneratedAt').innerText = `Refreshed: ${data.reportContext.generatedAt}`;
+
+      // Show main content, hide error states
+      document.getElementById('activePageContent').classList.remove('hidden');
+      document.getElementById('fallbackStateContent').classList.add('hidden');
+      document.getElementById('pageNavContainer').classList.remove('hidden');
+
+      // Render Dynamic Page Tabs (FR-05, dynamic 1-4 pages)
+      renderNavigationTabs();
+
+      // Render Current Page
+      renderActivePage();
+    }
+
+    function showFallbackState(icon, title, message) {
+      currentDealerData = null;
+      document.getElementById('activePageContent').classList.add('hidden');
+      document.getElementById('pageNavContainer').classList.add('hidden');
+      document.getElementById('dealerHeaderPill').classList.add('hidden');
+      
+      const fallbackBox = document.getElementById('fallbackStateContent');
+      fallbackBox.classList.remove('hidden');
+      document.getElementById('fallbackTitle').innerText = title;
+      document.getElementById('fallbackMessage').innerText = message;
+      document.getElementById('pageCounterDisplay').innerText = 'Offline';
+
+      lucide.createIcons();
+    }
+
+    function renderNavigationTabs() {
+      const tabContainer = document.getElementById('pageTabList');
+      tabContainer.innerHTML = '';
+
+      currentDealerData.pages.forEach((page, index) => {
+        const btn = document.createElement('button');
+        btn.onclick = () => switchPage(index);
+        
+        const isActive = index === activePageIndex;
+        btn.className = `px-3.5 py-1.5 rounded-md text-xs font-medium transition flex items-center space-x-2 ${
+          isActive 
+            ? 'bg-blue-600 text-white shadow-sm ring-1 ring-blue-400/50' 
+            : 'bg-slate-700/60 hover:bg-slate-700 text-slate-300 hover:text-white'
+        }`;
+
+        btn.innerHTML = `
+          <span class="w-4 h-4 rounded-full ${isActive ? 'bg-white/20' : 'bg-slate-600'} text-[10px] flex items-center justify-center font-bold">${index + 1}</span>
+          <span>${page.title}</span>
+        `;
+        tabContainer.appendChild(btn);
+      });
+
+      updateCounter();
+    }
+
+    function switchPage(index) {
+      activePageIndex = index;
+      renderNavigationTabs();
+      renderActivePage();
+    }
+
+    function updateCounter() {
+      if (!currentDealerData) return;
+      document.getElementById('pageCounterDisplay').innerText = `Page ${activePageIndex + 1} of ${currentDealerData.pages.length}`;
+    }
+
+    function togglePresentMode() {
+      isPresentMode = !isPresentMode;
+      const headers = document.querySelectorAll('.no-print');
+      const presentBtn = document.getElementById('presentModeBtn');
+
+      if (isPresentMode) {
+        document.body.classList.add('bg-slate-950');
+        presentBtn.innerHTML = `<i data-lucide="minimize" class="w-4 h-4"></i><span>Exit Present</span>`;
+        presentBtn.classList.replace('bg-blue-600', 'bg-slate-700');
+      } else {
+        document.body.classList.remove('bg-slate-950');
+        presentBtn.innerHTML = `<i data-lucide="presentation" class="w-4 h-4"></i><span>Present</span>`;
+        presentBtn.classList.replace('bg-slate-700', 'bg-blue-600');
+      }
+      lucide.createIcons();
+    }
+
+    /* =========================================================================
+       PAGE RENDER ENGINE (Generates Executive Cards + Benchmarks without wide tables)
+       ========================================================================= */
+    function renderActivePage() {
+      const page = currentDealerData.pages[activePageIndex];
+      const container = document.getElementById('activePageContent');
+
+      let metricsHtml = page.metrics.map(m => `
+        <div class="bg-slate-800/90 rounded-xl p-4 border ${m.highlight ? 'border-blue-500/80 bg-blue-950/20 shadow-lg shadow-blue-950/30 ring-1 ring-blue-500/40' : 'border-slate-700/80'} flex flex-col justify-between">
+          <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+            <span class="font-medium">${m.label}</span>
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full ${m.highlight ? 'bg-blue-600/30 text-blue-300 border border-blue-500/40' : 'bg-slate-700 text-slate-300'}">${m.badge}</span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight my-1 ${m.highlight ? 'text-blue-400' : ''}">
+            ${m.value}
+          </div>
+          <div class="text-[11px] text-slate-400 flex items-center space-x-1">
+            <span>${m.subtext}</span>
+          </div>
+        </div>
+      `).join('');
+
+      let detailSectionHtml = '';
+
+      // If page has a synthesized table breakdown (replaces 25-column source monster)
+      if (page.breakdownRows) {
+        const headerCols = page.breakdownHeaders.map(h => `<th class="text-left text-xs font-semibold text-slate-300 pb-2.5 pt-1 px-3 border-b border-slate-700">${h}</th>`).join('');
+        const bodyRows = page.breakdownRows.map(row => `
+          <tr class="hover:bg-slate-750/50 border-b border-slate-700/40 text-xs text-slate-200 transition">
+            <td class="py-2.5 px-3 font-medium text-white">${row[0]}</td>
+            <td class="py-2.5 px-3 text-slate-300 font-mono">${row[1]}</td>
+            <td class="py-2.5 px-3 text-slate-300 font-mono">${row[2]}</td>
+            <td class="py-2.5 px-3 text-slate-300 font-mono">${row[3]}</td>
+            <td class="py-2.5 px-3 text-emerald-400 font-mono font-semibold">${row[4]}</td>
+          </tr>
+        `).join('');
+
+        detailSectionHtml = `
+          <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/80 mt-4">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300">${page.breakdownTitle}</h3>
+              <span class="text-[10px] text-slate-400">Synthesized Executive View</span>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead><tr>${headerCols}</tr></thead>
+                <tbody>${bodyRows}</tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      // If page has Zone/Market benchmark cards
+      if (page.benchmarks) {
+        const benchmarkItems = page.benchmarks.map(b => `
+          <div class="flex items-center justify-between p-3 rounded-lg bg-slate-900/60 border border-slate-700">
+            <div>
+              <div class="text-xs font-semibold text-white">${b.metric}</div>
+              <div class="text-[10px] text-slate-400 mt-0.5">Your Store: <span class="font-bold text-blue-400 font-mono">${b.store}</span></div>
+            </div>
+            <div class="flex items-center space-x-3 text-right">
+              <div>
+                <div class="text-[10px] text-slate-400">Zone Avg</div>
+                <div class="text-xs font-mono font-medium text-slate-200">${b.zone}</div>
+              </div>
+              <div>
+                <div class="text-[10px] text-slate-400">Region Avg</div>
+                <div class="text-xs font-mono font-medium text-slate-200">${b.region}</div>
+              </div>
+              <div>
+                <div class="text-[10px] text-slate-400">National</div>
+                <div class="text-xs font-mono font-medium text-slate-200">${b.national}</div>
+              </div>
+            </div>
+          </div>
+        `).join('');
+
+        detailSectionHtml = `
+          <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/80 mt-4">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300">${page.benchmarkTitle}</h3>
+              <span class="text-[10px] text-emerald-400 font-medium">✓ Exceeding Zone Average</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              ${benchmarkItems}
+            </div>
+          </div>
+        `;
+      }
+
+      container.innerHTML = `
+        <!-- Section Page Header -->
+        <div class="mb-4">
+          <div class="flex items-center space-x-2 text-blue-400 text-xs font-semibold uppercase tracking-wider">
+            <span>Review Stream</span>
+            <span>•</span>
+            <span>${currentDealerData.dealer.name}</span>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight">${page.title}</h2>
+          <p class="text-xs text-slate-400 mt-0.5">${page.subtitle}</p>
+        </div>
+
+        <!-- 3 to 5 Primary Outcome Cards (Spec 6.3) -->
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
+          ${metricsHtml}
+        </div>
+
+        <!-- Presenter Speaking Anchor Card -->
+        <div class="mt-4 bg-gradient-to-r from-blue-950/40 via-slate-800/80 to-slate-800/80 border border-blue-900/50 rounded-xl p-3.5 flex items-start space-x-3">
+          <div class="bg-blue-600/30 text-blue-400 p-1.5 rounded-md mt-0.5">
+            <i data-lucide="message-square-quote" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <div class="text-[10px] font-bold uppercase tracking-wider text-blue-400">Presenter Key Takeaway & Discussion Driver</div>
+            <p class="text-xs text-slate-200 mt-0.5 leading-relaxed font-normal">${page.talkingPoint}</p>
+          </div>
+        </div>
+
+        <!-- Supporting Detail Section (Synthesized, no horizontal scrolling) -->
+        ${detailSectionHtml}
+      `;
+
+      lucide.createIcons();
+    }
+
+    // Launch
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
